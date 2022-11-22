@@ -143,9 +143,9 @@ let calculator = {
 
 }
 
-calculator.read();
-calculator.sum();
-calculator.mul();
+// calculator.read();
+// calculator.sum();
+// calculator.mul();
 
 
 
@@ -168,3 +168,62 @@ let ladder = {
 }
 
 ladder.up().up().down().showStep();
+
+
+//!Две разных функции - создают один объект 
+
+let C = {};
+
+function A() {
+return C;
+}
+
+function B() {
+return C;
+}
+
+let a = new A;
+let b = new B;
+
+console.log(a == b); // true
+
+//! Калькулятор - функция конструктор
+
+function Calculator() {
+    this.read = function() {
+        this.firstNum = +prompt('Введите первое число', 'Первое число');
+        this.secondNum = +prompt('Введите второе число', 'Второе число');
+    },
+
+    this.sum = function() {
+        return (this.firstNum + this.secondNum);
+         
+    }
+
+    this.mul = function() {
+        return (this.firstNum * this.secondNum);
+    }
+}
+
+let calk = new Calculator();
+// calk.read();
+// alert(calk.sum());
+// alert(calk.mul());
+
+
+//! Функция конструктор аккумулятор
+
+function Accumulator (startingValue) {
+    this.value = startingValue;
+
+    this.read = function() {
+        this.value += +prompt('Please, enter a number','Default number'); 
+    }
+
+}
+
+let accumulator = new Accumulator(55);
+// accumulator.read();
+// accumulator.read();
+// accumulator.read();
+// alert(accumulator.value);
