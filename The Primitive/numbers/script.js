@@ -50,7 +50,7 @@
 //     }
 //     alert(`Число: ${readNumber2()}`);//здесь происходит вызов функции внутри Alert
 
-//!Функция генератор случайных чисел от и до
+//!Функция генератор случайных чисел от и до (не включительно)
 
 // function random(min, max) {
 
@@ -60,13 +60,15 @@
 
 // console.log(random(3, 5));
 
-//!Функция генератор случайных целых чисел от и до (включительно)
+//!Функция-генератор случайных целых чисел от и до (включительно)
 
 function randomInteger(min, max) {
     let randomNum = Math.random();
-    randomNum = (max - min) * randomNum + min;
+    randomNum = ((max + 0.5) - (min - 0.5)) * randomNum + (min - 0.5);
     return Math.round(randomNum);
 }
+
+console.log( randomInteger(3, 7) );
 
 let i = 0;
 let result;
@@ -90,7 +92,7 @@ function Check() {
             case 4: d++;
                 break;
         }
-        
+
     }
     console.log(a);
     console.log(b);
@@ -99,5 +101,7 @@ function Check() {
 }
 
 Check();
+
+
 
 

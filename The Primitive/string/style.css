@@ -1,0 +1,13 @@
+.blockHello {
+    width: 80%;
+    height: 300px;
+    background-color: blanchedalmond;
+    color: brown;
+
+    font-size: 12em;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
