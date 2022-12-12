@@ -362,3 +362,51 @@ function getLastDayOfMonth(year, month){
 }
 
 console.log(getLastDayOfMonth(2012, 1));
+
+// Напишите функцию getSecondsToday() , возвращающую количество секунд с начала
+// сегодняшнего дня.
+// Например, если сейчас 10:00 , и не было перехода на зимнее/летнее время, то:
+// Функция должна работать в любой день, т.е. в ней не должно быть конкретного значения
+// сегодняшней даты.
+
+function getSecondsToday(){
+
+    let date = new Date();
+    let quantitySeconds = date.getHours()*3600 + date.getMinutes()*60 + date.getSeconds();
+    return quantitySeconds; 
+
+} 
+
+console.log(getSecondsToday());
+
+
+// Создайте функцию getSecondsToTomorrow() , возвращающую количество секунд до
+// завтрашней даты.
+// Например, если сейчас 23:00 , то:
+// P.S. Функция должна работать в любой день, т.е. в ней не должно быть конкретного
+// значения сегодняшней даты.
+
+function getSecondsToTomorrow(){
+
+    let date = new Date();
+    let quantitySeconds = 24*3600 - date.getHours()*3600 + date.getMinutes()*60 + date.getSeconds();
+    return quantitySeconds; 
+
+}
+
+console.log(getSecondsToTomorrow());
+
+// Напишите функцию formatDate(date) , форматирующую date по следующему
+// принципу:
+// Если спустя date прошло менее 1 секунды, вывести "прямо сейчас" .
+// В противном случае, если с date прошло меньше 1 минуты, вывести "n сек.
+// назад" .
+// В противном случае, если меньше часа, вывести "m мин. назад" .
+// В противном случае, полная дата в формате "DD.MM.YY HH:mm" . А именно:
+// "день.месяц.год часы:минуты" , всё в виде двух цифр, т.е. 31.12.16 10:00 .
+
+console.log( formatDate(new Date(new Date - 1)) ); // "прямо сейчас"
+console.log( formatDate(new Date(new Date - 30 * 1000)) ); // "30 сек. назад"
+console.log( formatDate(new Date(new Date - 5 * 60 * 1000)) ); // "5 мин. назад"
+// вчерашняя дата вроде 31.12.2016, 20:00
+console.log( formatDate(new Date(new Date - 86400 * 1000)) );
