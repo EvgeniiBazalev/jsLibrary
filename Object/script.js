@@ -819,20 +819,21 @@
         let shooters = [];
         let i = 0;
         while (i < 10) {
-            console.log(`В начале цикла while i = ${i}`);
+            let j = i;
             let shooter = function () { // функция shooter
-                console.log(`Внутри функции shooter i = ${i}`); // должна выводить порядковый номер
+                console.log(j); // должна выводить порядковый номер
             };
             
             shooters.push(shooter);
-            console.log(`В массив записали ${shooters[i]}`);
+            
 
             i++;
         }
         return shooters;
     }
     let army = makeArmy();
-    console.log(army[0]()); // у 0-го стрелка будет номер 10
-    console.log(army[5]()); // и у 5-го стрелка тоже будет номер 10
+    army[0](); // у 0-го стрелка будет номер 10
+    army[5](); // и у 5-го стрелка тоже будет номер 10
+    console.log(army);
     // ... у всех стрелков будет номер 10, вместо 0, 1, 2, 3...
 }
