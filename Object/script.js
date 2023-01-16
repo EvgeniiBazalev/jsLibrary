@@ -768,7 +768,7 @@
 
     function inArray(arr) {
         return function (item) {
-            for (i = 0; i < arr.length; i++){
+            for (i = 0; i < arr.length; i++) {
                 if (item == arr[i]) {
                     return true;
                 }
@@ -782,4 +782,57 @@
     let arr = [1, 2, 3, 4, 5, 6, 7];
     console.log(arr.filter(inBetween(3, 6))); // 3,4,5,6
     console.log(arr.filter(inArray([1, 2, 10]))); // 1,2
+}
+
+// У нас есть массив объектов, который нужно отсортировать:
+// Обычный способ был бы таким:
+{
+    'use strict';
+    let users = [
+        { name: "John", age: 20, surname: "Johnson" },
+        { name: "Pete", age: 18, surname: "Peterson" },
+        { name: "Ann", age: 19, surname: "Hathaway" }
+    ];
+
+    // по имени (Ann, John, Pete)
+    // users.sort((a, b) => a.name > b.name ? 1 : -1);
+    // по возрасту (Pete, Ann, John)
+    // users.sort((a, b) => a.age > b.age ? 1 : -1);
+
+    function byField(property) {
+        return (a, b) => a[property] > b[property] ? 1 : -1;
+    }
+
+
+    users.sort(byField('name'));
+    console.log(users);
+    users.sort(byField('age'));
+    console.log(users);
+}
+
+// Следующий код создаёт массив из стрелков ( shooters ).
+// Каждая функция предназначена выводить их порядковые номера. Но что-то пошло не
+// так…
+{
+    'use strict';
+    function makeArmy() {
+        let shooters = [];
+        let i = 0;
+        while (i < 10) {
+            console.log(`В начале цикла while i = ${i}`);
+            let shooter = function () { // функция shooter
+                console.log(`Внутри функции shooter i = ${i}`); // должна выводить порядковый номер
+            };
+            
+            shooters.push(shooter);
+            console.log(`В массив записали ${shooters[i]}`);
+
+            i++;
+        }
+        return shooters;
+    }
+    let army = makeArmy();
+    console.log(army[0]()); // у 0-го стрелка будет номер 10
+    console.log(army[5]()); // и у 5-го стрелка тоже будет номер 10
+    // ... у всех стрелков будет номер 10, вместо 0, 1, 2, 3...
 }
