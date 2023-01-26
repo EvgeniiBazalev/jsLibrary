@@ -837,3 +837,37 @@
     console.log(army);
     // ... у всех стрелков будет номер 10, вместо 0, 1, 2, 3...
 }
+
+// Измените код makeCounter() так, чтобы счётчик мог увеличивать и устанавливать
+// значение:
+// counter() должен возвращать следующее значение (как и раньше).
+// counter.set(value) должен устанавливать счётчику значение value .
+// counter.decrease() должен уменьшать значение счётчика на 1.
+
+{
+
+    'use strict';
+
+    function makeCounter() {
+    let count = 0;
+
+
+  
+    // ... ваш код ...
+  }
+  
+  let counter = makeCounter();
+  
+  console.log( counter() ); // 0
+  console.log( counter() ); // 1
+  
+  counter.set(10); // установить новое значение счётчика
+  
+  console.log( counter() ); // 10
+  
+  counter.decrease(); // уменьшить значение счётчика на 1
+  
+  console.log( counter() ); // 10 (вместо 11)
+
+
+}
