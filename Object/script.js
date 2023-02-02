@@ -822,6 +822,7 @@
             let j = i;
             let shooter = function () { // функция shooter
                 console.log(j); // должна выводить порядковый номер
+                console.log(i);
             };
             
             shooters.push(shooter);
@@ -834,6 +835,16 @@
     let army = makeArmy();
     army[0](); // у 0-го стрелка будет номер 10
     army[5](); // и у 5-го стрелка тоже будет номер 10
-    console.log(army);
+    // console.log(army[5]());
     // ... у всех стрелков будет номер 10, вместо 0, 1, 2, 3...
+}
+
+{
+    'use strict';
+    let i = 0;
+    while (i<10) {
+        console.log(`вызываем i до инкрементирования = ${i}`);
+        i++;
+        console.log(`вызываем i после инкрементирования = ${i}`);
+    }
 }
