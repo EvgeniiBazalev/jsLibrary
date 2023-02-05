@@ -822,7 +822,6 @@
             let j = i;
             let shooter = function () { // функция shooter
                 console.log(j); // должна выводить порядковый номер
-                console.log(i);
             };
 
             shooters.push(shooter);
@@ -835,7 +834,7 @@
     let army = makeArmy();
     army[0](); // у 0-го стрелка будет номер 10
     army[5](); // и у 5-го стрелка тоже будет номер 10
-    // console.log(army[5]());
+    console.log(army);
     // ... у всех стрелков будет номер 10, вместо 0, 1, 2, 3...
 }
 
@@ -850,25 +849,136 @@
     'use strict';
 
     function makeCounter() {
-    let count = 0;
+        let count = 0;
+
+        return function () {
+            count++;
+            return count;
+        }
+
+        makeCounter.set: function(st) {
+            count = st;
+        }
+        // ... ваш код ...
+    }
+
+    let counter = makeCounter();
+
+    console.log(counter()); // 0
+    console.log(counter()); // 1
+
+    counter.set(10); // установить новое значение счётчика
+
+    console.log(counter()); // 10
+
+    counter.decrease(); // уменьшить значение счётчика на 1
+
+    console.log(counter()); // 10 (вместо 11)
 
 
+}
+
+
+// Создайте декоратор spy(func) , который должен возвращать обёртку, которая сохраняет
+// все вызовы функции в своём свойстве calls .
+// Каждый вызов должен сохраняться как массив аргументов.
+
+
+{
+    'use strict';
+
+    function work(a, b) {
+        console.log(a + b); // произвольная функция или метод
+    }
+
+    function spy(func) {
   
-    // ... ваш код ...
-  }
-  
-  let counter = makeCounter();
-  
-  console.log( counter() ); // 0
-  console.log( counter() ); // 1
-  
-  counter.set(10); // установить новое значение счётчика
-  
-  console.log( counter() ); // 10
-  
-  counter.decrease(); // уменьшить значение счётчика на 1
-  
-  console.log( counter() ); // 10 (вместо 11)
+        function wrapper(...args) {
+          // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
+          wrapper.calls.push(args);
+          return func.call(this, ...args);
+        }      
+        wrapper.calls = [];      
+        return wrapper;
+      }
+
+    newResult = spy(work);
+    newResult(1, 2); // 3
+    newResult(4, 5); // 9
+    console.log(newResult.calls);
+
+
+    for (let args of newResult.calls) {
+    console.log('call:' + args.join()); // "call:1,2", "call:4,5"
+    }
+}
+
+
+{
+    'use strict';
+
+    function work(a, b) {
+        work.property = 'prop';
+        console.log(arguments[0]);
+        return 22;
+    }
+
+    work(1, 2);
+
+
+}
+
+
+
+
+// Создайте декоратор delay(f, ms) , который задерживает каждый вызов f на ms
+// миллисекунд. Например:
+
+
+{
+    'use strict';
+
+    function f(x) {
+        alert(x);
+    }
+    // создаём обёртки
+    let f1000 = delay(f, 1000);
+    let f1500 = delay(f, 1500);
+    f1000("test"); // показывает "test" после 1000 мс
+    f1500("test"); // показывает "test" после 1500 мс
+
+
+
+}
+
+
+{
+    'use strict';
+
+    function slow(x) {
+        // здесь могут быть ресурсоёмкие вычисления
+        console.log(`Called with ${x}`);
+        return x;
+    }
+    function cachingDecorator(func) {
+        func.cache = new Map();
+        return function (x) {
+            if ( func.cache.has(x)) { // если кеш содержит такой x,
+                return  func.cache.get(x); // читаем из него результат
+                console.log('сработал кэш');
+            }
+
+            let result = func(x); // иначе, вызываем функцию
+            func.cache.set(x, result); // и кешируем (запоминаем) результат
+            return result;
+        };
+    }
+    slow = cachingDecorator(slow);
+    console.log(slow(1)); // slow(1) кешируем
+    console.log("Again: " + slow(1)); // возвращаем из кеша
+    console.log(slow(2)); // slow(2) кешируем
+    console.log("Again: " + slow(2)); // возвращаем из кеша
+    console.log(slow.cache);
 
 
 }
