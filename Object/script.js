@@ -850,25 +850,105 @@
     'use strict';
 
     function makeCounter() {
-    let count = 0;
+        let count = 0;
+        function gocountman() {
+            return count++;
+        }
+        gocountman.set = value => count = value;
+        gocountman.decrease = () => count--;
+        return gocountman;
+    }
+
+    let counter = makeCounter();
+
+    console.log(counter()); // 0
+    console.log(counter()); // 1
+
+    counter.set(10); // установить новое значение счётчика
+    console.log(counter()); // 10
+
+    counter.decrease(); // уменьшить значение счётчика на 1
+
+    console.log(counter()); // 10 (вместо 11)
+
+}
 
 
-  
-    // ... ваш код ...
-  }
-  
-  let counter = makeCounter();
-  
-  console.log( counter() ); // 0
-  console.log( counter() ); // 1
-  
-  counter.set(10); // установить новое значение счётчика
-  
-  console.log( counter() ); // 10
-  
-  counter.decrease(); // уменьшить значение счётчика на 1
-  
-  console.log( counter() ); // 10 (вместо 11)
 
+// Напишите функцию sum , которая бы работала следующим образом:
+
+
+{
+
+    'use strict';
+
+    function sum(a) {
+        let currentSum = a;
+        function f(b) {
+            currentSum += b;
+            return f;
+        }
+        f.toString = function () {
+            return currentSum;
+        };
+        return f;
+    }
+
+    console.log('Сумма равна ' + sum(1)(2));
+    console.log(sum(1)(2)(3));
+    console.log(sum(5)(-1)(2));
+    console.log(sum(6)(-1)(-2)(-3));
+    console.log(sum(0)(1)(2)(3)(4)(5));
+
+}
+
+{
+    'use strict';
+
+    let timerId = setTimeout(() => console.log("ничего не происходит"), 10000);
+    console.log(timerId); // идентификатор таймера
+    clearTimeout(timerId);
+    console.log(timerId); // тот же идентификатор (не принимает значение null после отмены)
+
+}
+
+{
+    'use strict';
+
+    let start = Date.now();
+    let times = [];
+    setTimeout(function run() {
+        times.push(Date.now() - start); // запоминаем задержку от предыдущего вызова
+        if (start + 100 < Date.now()) console.log(times); // показываем задержку через 100 мс
+        else setTimeout(run); // если нужно ещё запланировать
+    });
+    // пример вывода:
+    // 1,1,1,1,9,15,20,24,30,35,40,45,50,55,59,64,70,75,80,85,90,95,100
+
+}
+
+
+// Напишите функцию printNumbers(from, to) , которая выводит число каждую секунду,
+// начиная от from и заканчивая to .
+// Сделайте два варианта решения.
+// 1. Используя setInterval .
+// 2. Используя рекурсивный setTimeout .
+
+{
+    'use strict';
+
+
+    function printNumbers(from, to) {
+        setTimeout(function run(){
+            if(from < to) {
+                
+                setTimeout(run, 1000);
+                console.log(from++);
+            }
+        }
+        ,1000);
+}
+
+printNumbers(6, 10);    
 
 }
