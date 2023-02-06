@@ -20,19 +20,13 @@
     //Вывод всех пар ключ - объект
     console.log(`Объект user содержит следующие свойства:`);
     for (let key in user) {
-
         console.log(`Свойство ${key} содержит значение: ${user[key]}`);
-
     }
-
-
 
 
     //! Проверка объекта на пустоту
     let obj = {
-
         // name: 'petia'
-
     };
 
     function isEmpty(obj) {
@@ -51,9 +45,7 @@
     console.log(isEmpty(obj));
 
 
-
     //!Суммирование всех свойств объекта
-
     let salaries = {
         John: 100,
         Anna: 200,
@@ -66,11 +58,7 @@
     for (let key in salaries) {
         summa = summa + salaries[key];
     }
-
     console.log(summa);
-
-
-
 
     //!Удвоение численных свойств объекта 
 
@@ -84,8 +72,6 @@
 
     console.log((typeof (salt.place == Number)));
 
-
-
     function multiplyNumeric(anyObj) {
         for (let key in anyObj) {
             if (typeof (anyObj[key]) == Number) {
@@ -95,18 +81,14 @@
     }
 
     function printObj(anyObj) {
-
         console.log(`Объект содержит следующие свойства:`);
         for (let key in anyObj) {
-
             console.log(`Свойство ${key} содержит значение: ${anyObj[key]}`);
-
         }
     }
 
     multiplyNumeric(salt);
     printObj(salt);
-
 
     //!Проверка работы метода с "лишними скобками". Скобки не мешают
     let userTwo = {
@@ -116,10 +98,9 @@
     };
 
     (userTwo.go)();
-
     //А вот так точка в userTwo.go срабатывает раньше и теряется this
-
     // (userTwo.name == "Джон" ? userTwo.go : userTwo.run)() // ошибка!
+
 
     //!калькулятор
 
@@ -139,8 +120,6 @@
             calculator.mulOperand = calculator.operandOne * calculator.operandTwo;
             alert(`Произведение равно ${calculator.mulOperand}`);
         }
-
-
     }
 
     // calculator.read();
@@ -274,7 +253,6 @@
 
     console.log(topSalary(salaries1));
 
-
     //!Дата
     // Создайте объект Date для даты: 20 февраля 2012 года, 3 часа 12 минут. Временная зона
     // – местная.
@@ -303,20 +281,16 @@
         };
         // console.log(week[0]);
 
-
         return week[date.getDay()];
-
     }
 
     console.log(getWeekDay(date2));
-
     //!В Европейских странах неделя начинается с понедельника (день номер 1), затем идёт
     // вторник (номер 2) и так до воскресенья (номер 7). Напишите функцию
     // getLocalDay(date) , которая возвращает «европейский» день недели для даты date .
 
     let date3 = new Date();
     date3.setDate(date3.getDate() + 3);
-
 
     function getLocalDay(date) {
 
@@ -376,9 +350,7 @@
         return quantitySeconds;
 
     }
-
     console.log(getSecondsToday());
-
 
     // Создайте функцию getSecondsToTomorrow() , возвращающую количество секунд до
     // завтрашней даты.
@@ -706,12 +678,18 @@
 //Проверим вызов функций и работу лексического окружения
 
 {
+    'use strict';
     function f() {
         let value = 0;
-        return function () { console.log(value++); };
+        return function foo() {
+            console.log(value);
+            value++;
+        };
     }
     // три функции в массиве, каждая из них ссылается на лексическое окружение
     // из соответствующего вызова f()
+
+
     f()();
     f()();
     f()();
@@ -938,17 +916,17 @@
 
 
     function printNumbers(from, to) {
-        setTimeout(function run(){
-            if(from < to) {
-                
+        setTimeout(function run() {
+            if (from < to) {
+
                 setTimeout(run, 1000);
                 console.log(from++);
             }
         }
-        ,1000);
-}
+            , 1000);
+    }
 
-printNumbers(6, 10);    
+    printNumbers(6, 10);
 
 }
 
@@ -967,15 +945,15 @@ printNumbers(6, 10);
     }
 
     function spy(func) {
-  
+
         function wrapper(...args) {
-          // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
-          wrapper.calls.push(args);
-          return func.call(this, ...args);
-        }      
-        wrapper.calls = [];      
+            // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
+            wrapper.calls.push(args);
+            return func.call(this, ...args);
+        }
+        wrapper.calls = [];
         return wrapper;
-      }
+    }
 
     newResult = spy(work);
     newResult(1, 2); // 3
@@ -984,7 +962,7 @@ printNumbers(6, 10);
 
 
     for (let args of newResult.calls) {
-    console.log('call:' + args.join()); // "call:1,2", "call:4,5"
+        console.log('call:' + args.join()); // "call:1,2", "call:4,5"
     }
 }
 
@@ -999,33 +977,7 @@ printNumbers(6, 10);
     }
 
     work(1, 2);
-
-
 }
-
-
-
-
-// Создайте декоратор delay(f, ms) , который задерживает каждый вызов f на ms
-// миллисекунд. Например:
-
-
-{
-    'use strict';
-
-    function f(x) {
-        alert(x);
-    }
-    // создаём обёртки
-    let f1000 = delay(f, 1000);
-    let f1500 = delay(f, 1500);
-    f1000("test"); // показывает "test" после 1000 мс
-    f1500("test"); // показывает "test" после 1500 мс
-
-
-
-}
-
 
 {
     'use strict';
@@ -1038,8 +990,8 @@ printNumbers(6, 10);
     function cachingDecorator(func) {
         func.cache = new Map();
         return function (x) {
-            if ( func.cache.has(x)) { // если кеш содержит такой x,
-                return  func.cache.get(x); // читаем из него результат
+            if (func.cache.has(x)) { // если кеш содержит такой x,
+                return func.cache.get(x); // читаем из него результат
                 console.log('сработал кэш');
             }
 
@@ -1054,6 +1006,100 @@ printNumbers(6, 10);
     console.log(slow(2)); // slow(2) кешируем
     console.log("Again: " + slow(2)); // возвращаем из кеша
     console.log(slow.cache);
+}
 
 
+// Создайте декоратор delay(f, ms) , который задерживает каждый вызов f на ms
+// миллисекунд. Например:
+// Другими словами, delay(f, ms) возвращает вариант f с «задержкой на ms мс».
+// В приведённом выше коде f – функция с одним аргументом, но ваше решение должно
+// передавать все аргументы и контекст this .
+
+{
+    'use strict';
+
+    function f(x) {
+        console.log(x);
+    }
+    // создаём обёртки
+    function delay(func, delay) {
+
+        function startWithDelay(...args) {
+            return setTimeout.call(this, func, delay, ...args);
+        }
+        return startWithDelay;
+    }
+    let f1000 = delay(f, 1000);
+    let f1500 = delay(f, 1500);
+    f1000("test"); // показывает "test" после 1000 мс
+    f1500("test"); // показывает "test" после 1500 мс  
+}
+
+
+{
+    'use strict';
+    function outerF() {
+        let i = 0;
+        function innerF() {
+            console.log(i++);
+        }
+        return innerF;
+    }
+
+    let func = outerF();;
+    outerF()(); //Так каждая функция достает переменную i из своего лексичечкого окружения
+    outerF()(); //Замыкание не работает
+    outerF()();
+
+    func(); //Так каждая функция достает переменную i из лексичечкого окружения созданного вокруг func
+    func(); //Замыкание работает
+    func();
+}
+
+// Результатом декоратора debounce(f, ms) должна быть обёртка, которая передаёт
+// вызов f не более одного раза в ms миллисекунд. Другими словами, когда мы вызываем
+// debounce , это гарантирует, что все остальные вызовы будут игнорироваться в течение
+// ms .
+{
+    'use strict';
+
+    function func(x) {
+        console.log(`Сработал вызов ${x}`);
+    }
+
+    function debounce(func, ms) {
+        console.log('Запустилась debounce');
+        let stop = 0;
+
+        function stopZiro() {
+            console.log('Запустилась stopZiro');
+            stop = 0;
+        }
+
+        function ignor(x) {
+            console.log(`Игнорирован вызов ${x}`)
+        }
+
+        function start(x) {
+            console.log(`Запущен start${x}`);
+            if (stop == 0) {
+                console.log('Запустилась top == 0');
+                stop = 1;
+                setTimeout(stopZiro, ms);
+                return func(x);
+            } else {
+                console.log('Запустилась top == 1');
+            return ignor(x);
+            }
+        }
+        return start;
+        
+    }
+
+    let f = debounce(func, 1000);
+    f(1); // выполняется немедленно
+    f(2); // проигнорирован
+    setTimeout(() => f(3), 100); // проигнорирован (прошло только 100 мс)
+    setTimeout(() => f(4), 1100); // выполняется
+    setTimeout(() => f(5), 1500); // проигнорирован (прошло только 400 мс от последнего вызова)
 }
