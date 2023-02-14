@@ -1,23 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="stylesheet" href="style.css">
-    
+
 
     <title>forTestAll</title>
 </head>
+
 <body>
-        <div class="centrWindow"><p>Привет Мир!</p></div>
+    <div class="centrWindow">
+        <p>Привет Мир!</p>
+    </div>
 
 
 
-        <!-- <script src="script.js"></script> -->
-        <script src="script2.js"></script>   
-        
-    
+    <!-- <script src="script.js"></script> -->
+    <script src="script2.js"></script>
+    <script>
+
+        class Clock {
+
+            constructor(template) {
+                this.template = template;
+            }
+
+            timer;
+
+            render() {
+                let date = new Date();
+
+                let hours = date.getHours();
+                if (hours < 10) hours = '0' + hours;
+
+                let mins = date.getMinutes();
+                if (mins < 10) mins = '0' + mins;
+
+                let secs = date.getSeconds();
+                if (secs < 10) secs = '0' + secs;
+                // console.log(this.template);
+
+                let output = this.template
+                    .replace('h', hours)
+                    .replace('m', mins)
+                    .replace('s', secs);
+
+
+                console.log(output);
+
+                // console.log(`${hours}:${mins}:${secs}`);
+            }
+
+            stop() {
+                clearInterval(timer);
+            }
+
+            start() {
+                this.render();
+                this.timer = setInterval(() => this.render(), 1000);
+            }
+
+        }
+
+        let clock = new Clock('h:m:s');
+        clock.start();
+
+    </script>
+
+
 </body>
+
 </html>
