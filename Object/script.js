@@ -1089,11 +1089,11 @@
                 return func(x);
             } else {
                 console.log('Запустилась top == 1');
-            return ignor(x);
+                return ignor(x);
             }
         }
         return start;
-        
+
     }
 
     let f = debounce(func, 1000);
@@ -1102,4 +1102,134 @@
     setTimeout(() => f(3), 100); // проигнорирован (прошло только 100 мс)
     setTimeout(() => f(4), 1100); // выполняется
     setTimeout(() => f(5), 1500); // проигнорирован (прошло только 400 мс от последнего вызова)
+}
+
+// Тормозящий (throttling) декоратор
+// Создайте «тормозящий» декоратор throttle(f, ms) , который возвращает обёртку,
+// передавая вызов в f не более одного раза в ms миллисекунд. Те вызовы, которые
+// попадают в период «торможения», игнорируются.
+
+
+{
+    'use strict';
+
+    function f(a) {
+        console.log(a)
+    }
+
+    function throttle(func, ms) {
+        // console.log('Запустилась debounce');
+        let stop = 0;
+        let y = 0;
+
+        function stopZiro() {
+            // console.log('Запустилась stopZiro');
+            stop = 0;
+            return func(y);
+        }
+
+        function ignor(x) {
+            // console.log(`Игнорирован вызов ${x}`)
+        }
+
+        function start(x) {
+            // console.log(`Запущен start${x}`);
+            if (stop == 0) {
+                // console.log('Запустилась top == 0');
+                stop = 1;
+                setTimeout(stopZiro, ms);
+                return func(x);
+            } else {
+                // console.log('Запустилась top == 1');
+                y = x;
+                return ignor(x);
+            }
+        }
+        return start;
+
+    }
+
+
+    // f1000 передаёт вызовы f максимум раз в 1000 мс
+    let f1000 = throttle(f, 1000);
+    f1000(1); // показывает 1
+    f1000(2); // (ограничение, 1000 мс ещё нет)
+    f1000(3); // (ограничение, 1000 мс ещё нет)
+    f1000(4); // (ограничение, 1000 мс ещё нет)
+    // когда 1000 мс истекли ...
+    // ...выводим 4, промежуточное значение 2 было проигнорировано
+
+}
+
+{
+    'use strict';
+
+    let user = {
+        firstName: "Вася",
+        sayHi() {
+            console.log(`Привет, ${this.firstName}!`);
+        }
+    };
+
+    function wrapper(func) {
+        user.sayHi();
+    }
+    let foo = wrapper;
+    foo();
+    // let testTimeout = setTimeout.call(this, user.sayHi, 1000)
+    // testTimeout();
+}
+
+{
+
+    function f() {
+        console.log(this.name);
+    }
+    f = f.bind({ name: "Вася" });
+    f = f.bind({ name: "Петя" });
+    f(); // Вася
+
+    console.log({ name: "Вася" }.name);
+
+}
+
+
+{
+    'use strict';
+    function askPassword(ok, fail) {
+        let password = "rocksar";
+        if (password == "rockstar") ok();
+        else fail();
+    }
+    let user = {
+        name: 'Вася',
+        loginOk() {
+            console.log(`${this.name} logged in`);
+        },
+        loginFail() {
+            console.log(`${this.name} failed to log in`);
+        },
+    };
+    askPassword(() => user.loginOk(), () => user.loginFail());
+    askPassword(user.loginOk.bind(user), user.loginFail.bind(user));
+
+}
+
+{
+
+    function askPassword(ok, fail) {
+        let password = "rockstar";
+        if (password == "rocksftar") ok();
+        else fail();
+    }
+    let user = {
+        name: 'John',
+        login(result) {
+            console.log(this.name + (result ? ' logged in' : ' failed to log in'));
+
+        }
+    };
+    askPassword(user.login.bind(user, true), user.login.bind(user, false)); // ?
+
+
 }
