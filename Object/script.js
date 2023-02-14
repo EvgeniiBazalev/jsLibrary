@@ -487,16 +487,17 @@
     // 1. С использованием цикла.
     // 2. Через рекурсию, т.к. sumTo(n) = n + sumTo(n-1) for n > 1 .
     // 3. С использованием формулы арифметической прогрессии
-
-    function sumToCycle(n) {
-        let sum = 0;
-        for (i = 1; i <= n; i++) {
-            sum += i;
+    {
+        function sumToCycle(n) {
+            let sum = 0;
+            for (i = 1; i <= n; i++) {
+                sum += i;
+            }
+            return sum;
         }
-        return sum;
-    }
 
-    console.log(sumToCycle(10000));
+        console.log(sumToCycle(10000));
+    }
 
 
 
@@ -822,31 +823,36 @@
 // counter.set(value) должен устанавливать счётчику значение value .
 // counter.decrease() должен уменьшать значение счётчика на 1.
 
-{
+// {
 
-    'use strict';
+//     'use strict';
 
-    function makeCounter() {
-        let count = 0;
-        function gocountman() {
-            return count++;
-        }
-        gocountman.set = value => count = value;
-        gocountman.decrease = () => count--;
-        return gocountman;
-    }
+//     function makeCounter() {
+//         let count = 0;
 
-    let counter = makeCounter();
+//         return function () {
+//             count++;
+//             return count;
+//         }
 
-    console.log(counter()); // 0
-    console.log(counter()); // 1
+//             function set(st) {
+//                 count = st;
+//             }
+//         // ... ваш код ...
+//     }
 
-    counter.set(10); // установить новое значение счётчика
-    console.log(counter()); // 10
+//     let counter = makeCounter();
 
-    counter.decrease(); // уменьшить значение счётчика на 1
+//     console.log(counter()); // 0
+//     console.log(counter()); // 1
 
-    console.log(counter()); // 10 (вместо 11)
+//     counter.set(10); // установить новое значение счётчика
+
+//     console.log(counter()); // 10
+
+//     counter.decrease(); // уменьшить значение счётчика на 1
+
+//     console.log(counter()); // 10 (вместо 11)
 
 }
 
@@ -946,13 +952,20 @@
 
     function spy(func) {
 
+
         function wrapper(...args) {
             // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
             wrapper.calls.push(args);
             return func.call(this, ...args);
         }
         wrapper.calls = [];
+            // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
+            wrapper.calls.push(args);
+            return func.call(this, ...args);
+        }
+        wrapper.calls = [];
         return wrapper;
+    }
     }
 
     newResult = spy(work);
@@ -962,6 +975,7 @@
 
 
     for (let args of newResult.calls) {
+        console.log('call:' + args.join()); // "call:1,2", "call:4,5"
         console.log('call:' + args.join()); // "call:1,2", "call:4,5"
     }
 }
@@ -1066,6 +1080,13 @@
     function func(x) {
         console.log(`Сработал вызов ${x}`);
     }
+    function cachingDecorator(func) {
+        func.cache = new Map();
+        return function (x) {
+            if (func.cache.has(x)) { // если кеш содержит такой x,
+                return func.cache.get(x); // читаем из него результат
+                console.log('сработал кэш');
+            }
 
     function debounce(func, ms) {
         console.log('Запустилась debounce');
@@ -1095,6 +1116,38 @@
         return start;
 
     }
+
+// Имеется объект dictionary , созданный с помощью Object.create(null) для
+// хранения любых пар ключ/значение .
+// Добавьте ему метод dictionary.toString() , который должен возвращать список
+// ключей, разделённых запятой. Ваш toString не должен выводиться при итерации
+// объекта с помощью цикла for..in .
+{
+    'use strict';
+    let dictionary = Object.create(null, {
+        toString: { // определяем свойство toString
+            value() { // значение -- это функция
+                return Object.keys(this).join();
+            }
+        }
+    });
+    // ваш код, который добавляет метод dictionary.toString
+    // добавляем немного данных
+
+    // Object.defineProperty(dictionary, "toString", {
+    //     enumerable: false
+    // });
+
+    dictionary.apple = "Apple";
+    dictionary.__proto__ = "test"; // здесь __proto__ -- это обычный ключ
+    // только apple и __proto__ выведены в цикле
+    for (let key in dictionary) {
+        console.log(key); // "apple", затем "__proto__"
+    }
+    // ваш метод toString в действии
+    console.log(dictionary); // "apple,__proto__"
+
+}
 
     let f = debounce(func, 1000);
     f(1); // выполняется немедленно
