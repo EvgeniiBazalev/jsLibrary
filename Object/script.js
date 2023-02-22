@@ -1387,3 +1387,30 @@ function delay(ms) {
     });
 }
 delay(3000).then(() => console.log('выполнилось через 3 секунды'));
+
+
+
+//Просто тестирую промисы
+new Promise(function (resolve, reject) {
+    let a = 1;
+    setTimeout(() => resolve(a), 1000);
+})
+    .then(function(a){
+        a=a*2;
+        console.log(a)
+
+        return new Promise(function (resolve, reject){
+            setTimeout(() => resolve(a), 1000);
+        })
+    })    
+    .then(function(a){
+        a=a*2;
+        console.log(a)
+
+        let error = new Error('Whoops!');
+        throw error;
+
+        return new Promise(function (resolve, reject){
+            setTimeout(() => resolve(a), 1000);
+        })
+    }).catch((error) => console.log(error));
