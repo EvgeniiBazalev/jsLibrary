@@ -1,16 +1,22 @@
 'use strict';
-'use strict';
+// Есть «обычная» функция. Как можно внутри неё получить результат выполнения async –
+// функции?
 
-// Перепишите один из примеров раздела Цепочка промисов, используя async/await
-// вместо .then/catch :
-
-async function loadJson(url) {
-    let response = await fetch(url);
-    if (response.status == 200) {
-        return response.json();
-    } else {
-        throw new Error(response.status);
-    }
+async function wait() {
+    alert('promise nachal work')
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    return 'promise work vse';
 }
-loadJson('no-such-user.json') // (3)
-    .catch(alert); // Error: 404
+function f() {
+    // покажет 10 через 1 секунду
+    wait()
+        .then(result => {
+            alert(result);
+            new Promise(resolve => {
+                setTimeout(resolve, 3000);
+                return 'promise2 work vse';
+            });
+        })
+        .then(result => alert(result));
+}
+f();
