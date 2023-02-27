@@ -959,25 +959,25 @@
             return func.call(this, ...args);
         }
         wrapper.calls = [];
-            // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
-            wrapper.calls.push(args);
-            return func.call(this, ...args);
-        }
-        wrapper.calls = [];
-        return wrapper;
+        // мы используем ...args вместо arguments для хранения "реального" массива в wrapper.calls
+        wrapper.calls.push(args);
+        return func.call(this, ...args);
     }
+    wrapper.calls = [];
+    return wrapper;
+}
     }
 
-    newResult = spy(work);
-    newResult(1, 2); // 3
-    newResult(4, 5); // 9
-    console.log(newResult.calls);
+newResult = spy(work);
+newResult(1, 2); // 3
+newResult(4, 5); // 9
+console.log(newResult.calls);
 
 
-    for (let args of newResult.calls) {
-        console.log('call:' + args.join()); // "call:1,2", "call:4,5"
-        console.log('call:' + args.join()); // "call:1,2", "call:4,5"
-    }
+for (let args of newResult.calls) {
+    console.log('call:' + args.join()); // "call:1,2", "call:4,5"
+    console.log('call:' + args.join()); // "call:1,2", "call:4,5"
+}
 }
 
 
@@ -1088,392 +1088,413 @@
                 console.log('сработал кэш');
             }
 
-    function debounce(func, ms) {
-        console.log('Запустилась debounce');
-        let stop = 0;
+            function debounce(func, ms) {
+                console.log('Запустилась debounce');
+                let stop = 0;
 
-        function stopZiro() {
-            console.log('Запустилась stopZiro');
-            stop = 0;
+                function stopZiro() {
+                    console.log('Запустилась stopZiro');
+                    stop = 0;
+                }
+
+                function ignor(x) {
+                    console.log(`Игнорирован вызов ${x}`)
+                }
+
+                function start(x) {
+                    console.log(`Запущен start${x}`);
+                    if (stop == 0) {
+                        console.log('Запустилась top == 0');
+                        stop = 1;
+                        setTimeout(stopZiro, ms);
+                        return func(x);
+                    } else {
+                        console.log('Запустилась top == 1');
+                        return ignor(x);
+                    }
+                }
+                return start;
+
+            }
+
+            // Имеется объект dictionary , созданный с помощью Object.create(null) для
+            // хранения любых пар ключ/значение .
+            // Добавьте ему метод dictionary.toString() , который должен возвращать список
+            // ключей, разделённых запятой. Ваш toString не должен выводиться при итерации
+            // объекта с помощью цикла for..in .
+            {
+                'use strict';
+                let dictionary = Object.create(null, {
+                    toString: { // определяем свойство toString
+                        value() { // значение -- это функция
+                            return Object.keys(this).join();
+                        }
+                    }
+                });
+                // ваш код, который добавляет метод dictionary.toString
+                // добавляем немного данных
+
+                // Object.defineProperty(dictionary, "toString", {
+                //     enumerable: false
+                // });
+
+                dictionary.apple = "Apple";
+                dictionary.__proto__ = "test"; // здесь __proto__ -- это обычный ключ
+                // только apple и __proto__ выведены в цикле
+                for (let key in dictionary) {
+                    console.log(key); // "apple", затем "__proto__"
+                }
+                // ваш метод toString в действии
+                console.log(dictionary); // "apple,__proto__"
+
+            }
+
+            let f = debounce(func, 1000);
+            f(1); // выполняется немедленно
+            f(2); // проигнорирован
+            setTimeout(() => f(3), 100); // проигнорирован (прошло только 100 мс)
+            setTimeout(() => f(4), 1100); // выполняется
+            setTimeout(() => f(5), 1500); // проигнорирован (прошло только 400 мс от последнего вызова)
         }
 
-        function ignor(x) {
-            console.log(`Игнорирован вызов ${x}`)
+        // Тормозящий (throttling) декоратор
+        // Создайте «тормозящий» декоратор throttle(f, ms) , который возвращает обёртку,
+        // передавая вызов в f не более одного раза в ms миллисекунд. Те вызовы, которые
+        // попадают в период «торможения», игнорируются.
+
+
+        {
+            'use strict';
+
+            function f(a) {
+                console.log(a)
+            }
+
+            function throttle(func, ms) {
+                // console.log('Запустилась debounce');
+                let stop = 0;
+                let y = 0;
+
+                function stopZiro() {
+                    // console.log('Запустилась stopZiro');
+                    stop = 0;
+                    return func(y);
+                }
+
+                function ignor(x) {
+                    // console.log(`Игнорирован вызов ${x}`)
+                }
+
+                function start(x) {
+                    // console.log(`Запущен start${x}`);
+                    if (stop == 0) {
+                        // console.log('Запустилась top == 0');
+                        stop = 1;
+                        setTimeout(stopZiro, ms);
+                        return func(x);
+                    } else {
+                        // console.log('Запустилась top == 1');
+                        y = x;
+                        return ignor(x);
+                    }
+                }
+                return start;
+
+            }
+
+
+            // f1000 передаёт вызовы f максимум раз в 1000 мс
+            let f1000 = throttle(f, 1000);
+            f1000(1); // показывает 1
+            f1000(2); // (ограничение, 1000 мс ещё нет)
+            f1000(3); // (ограничение, 1000 мс ещё нет)
+            f1000(4); // (ограничение, 1000 мс ещё нет)
+            // когда 1000 мс истекли ...
+            // ...выводим 4, промежуточное значение 2 было проигнорировано
+
         }
 
-        function start(x) {
-            console.log(`Запущен start${x}`);
-            if (stop == 0) {
-                console.log('Запустилась top == 0');
-                stop = 1;
-                setTimeout(stopZiro, ms);
-                return func(x);
-            } else {
-                console.log('Запустилась top == 1');
-                return ignor(x);
+        {
+            'use strict';
+
+            let user = {
+                firstName: "Вася",
+                sayHi() {
+                    console.log(`Привет, ${this.firstName}!`);
+                }
+            };
+
+            function wrapper(func) {
+                user.sayHi();
+            }
+            let foo = wrapper;
+            foo();
+            // let testTimeout = setTimeout.call(this, user.sayHi, 1000)
+            // testTimeout();
+        }
+
+        {
+
+            function f() {
+                console.log(this.name);
+            }
+            f = f.bind({ name: "Вася" });
+            f = f.bind({ name: "Петя" });
+            f(); // Вася
+
+            console.log({ name: "Вася" }.name);
+
+        }
+
+
+        {
+            'use strict';
+            function askPassword(ok, fail) {
+                let password = "rocksar";
+                if (password == "rockstar") ok();
+                else fail();
+            }
+            let user = {
+                name: 'Вася',
+                loginOk() {
+                    console.log(`${this.name} logged in`);
+                },
+                loginFail() {
+                    console.log(`${this.name} failed to log in`);
+                },
+            };
+            askPassword(() => user.loginOk(), () => user.loginFail());
+            askPassword(user.loginOk.bind(user), user.loginFail.bind(user));
+
+        }
+
+        {
+
+            function askPassword(ok, fail) {
+                let password = "rockstar";
+                if (password == "rocksftar") ok();
+                else fail();
+            }
+            let user = {
+                name: 'John',
+                login(result) {
+                    console.log(this.name + (result ? ' logged in' : ' failed to log in'));
+
+                }
+            };
+            askPassword(user.login.bind(user, true), user.login.bind(user, false)); // ?
+        }
+
+        // В коде ниже класс Rabbit наследует Animal .
+        // К сожалению, объект класса Rabbit не создаётся. Что не так? Исправьте ошибку.
+        class Animal {
+            constructor(name) {
+                this.name = name;
             }
         }
-        return start;
-
-    }
-
-// Имеется объект dictionary , созданный с помощью Object.create(null) для
-// хранения любых пар ключ/значение .
-// Добавьте ему метод dictionary.toString() , который должен возвращать список
-// ключей, разделённых запятой. Ваш toString не должен выводиться при итерации
-// объекта с помощью цикла for..in .
-{
-    'use strict';
-    let dictionary = Object.create(null, {
-        toString: { // определяем свойство toString
-            value() { // значение -- это функция
-                return Object.keys(this).join();
+        class Rabbit extends Animal {
+            constructor(name) {
+                super(name);
+                this.name = name;
+                this.created = Date.now();
             }
         }
-    });
-    // ваш код, который добавляет метод dictionary.toString
-    // добавляем немного данных
 
-    // Object.defineProperty(dictionary, "toString", {
-    //     enumerable: false
-    // });
-
-    dictionary.apple = "Apple";
-    dictionary.__proto__ = "test"; // здесь __proto__ -- это обычный ключ
-    // только apple и __proto__ выведены в цикле
-    for (let key in dictionary) {
-        console.log(key); // "apple", затем "__proto__"
-    }
-    // ваш метод toString в действии
-    console.log(dictionary); // "apple,__proto__"
-
-}
-
-    let f = debounce(func, 1000);
-    f(1); // выполняется немедленно
-    f(2); // проигнорирован
-    setTimeout(() => f(3), 100); // проигнорирован (прошло только 100 мс)
-    setTimeout(() => f(4), 1100); // выполняется
-    setTimeout(() => f(5), 1500); // проигнорирован (прошло только 400 мс от последнего вызова)
-}
-
-// Тормозящий (throttling) декоратор
-// Создайте «тормозящий» декоратор throttle(f, ms) , который возвращает обёртку,
-// передавая вызов в f не более одного раза в ms миллисекунд. Те вызовы, которые
-// попадают в период «торможения», игнорируются.
+        let rabbit = new Rabbit("Белый кролик"); // Error: this is not defined
+        console.log(rabbit.name);
 
 
-{
-    'use strict';
 
-    function f(a) {
-        console.log(a)
-    }
-
-    function throttle(func, ms) {
-        // console.log('Запустилась debounce');
-        let stop = 0;
-        let y = 0;
-
-        function stopZiro() {
-            // console.log('Запустилась stopZiro');
-            stop = 0;
-            return func(y);
-        }
-
-        function ignor(x) {
-            // console.log(`Игнорирован вызов ${x}`)
-        }
-
-        function start(x) {
-            // console.log(`Запущен start${x}`);
-            if (stop == 0) {
-                // console.log('Запустилась top == 0');
-                stop = 1;
-                setTimeout(stopZiro, ms);
-                return func(x);
-            } else {
-                // console.log('Запустилась top == 1');
-                y = x;
-                return ignor(x);
+        // Создайте новый класс ExtendedClock , который будет наследоваться от Clock и
+        // добавьте параметр precision – количество миллисекунд между «тиками». Установите
+        // значение в 1000 (1 секунда) по умолчанию.
+        // Сохраните ваш код в файл extended-clock.js
+        // Не изменяйте класс clock.js . Расширьте его.
+        class Clock {
+            constructor({ template }) {
+                this.template = template;
+            }
+            render() {
+                let date = new Date();
+                let hours = date.getHours();
+                if (hours < 10) hours = '0' + hours;
+                let mins = date.getMinutes();
+                if (mins < 10) mins = '0' + mins;
+                let secs = date.getSeconds();
+                if (secs < 10) secs = '0' + secs;
+                let output = this.template
+                    .replace('h', hours)
+                    .replace('m', mins)
+                    .replace('s', secs);
+                console.log(output);
+            }
+            stop() {
+                clearInterval(this.timer);
+            }
+            start() {
+                this.render();
+                this.timer = setInterval(() => this.render(), 1000);
             }
         }
-        return start;
-
-    }
 
 
-    // f1000 передаёт вызовы f максимум раз в 1000 мс
-    let f1000 = throttle(f, 1000);
-    f1000(1); // показывает 1
-    f1000(2); // (ограничение, 1000 мс ещё нет)
-    f1000(3); // (ограничение, 1000 мс ещё нет)
-    f1000(4); // (ограничение, 1000 мс ещё нет)
-    // когда 1000 мс истекли ...
-    // ...выводим 4, промежуточное значение 2 было проигнорировано
+        class ExtendedClock extends Clock {
 
-}
+            constructor(options) {
+                super(options);
+                let { precision = 1000 } = options;
+                this.precision = precision;
+            }
 
-{
-    'use strict';
-
-    let user = {
-        firstName: "Вася",
-        sayHi() {
-            console.log(`Привет, ${this.firstName}!`);
-        }
-    };
-
-    function wrapper(func) {
-        user.sayHi();
-    }
-    let foo = wrapper;
-    foo();
-    // let testTimeout = setTimeout.call(this, user.sayHi, 1000)
-    // testTimeout();
-}
-
-{
-
-    function f() {
-        console.log(this.name);
-    }
-    f = f.bind({ name: "Вася" });
-    f = f.bind({ name: "Петя" });
-    f(); // Вася
-
-    console.log({ name: "Вася" }.name);
-
-}
-
-
-{
-    'use strict';
-    function askPassword(ok, fail) {
-        let password = "rocksar";
-        if (password == "rockstar") ok();
-        else fail();
-    }
-    let user = {
-        name: 'Вася',
-        loginOk() {
-            console.log(`${this.name} logged in`);
-        },
-        loginFail() {
-            console.log(`${this.name} failed to log in`);
-        },
-    };
-    askPassword(() => user.loginOk(), () => user.loginFail());
-    askPassword(user.loginOk.bind(user), user.loginFail.bind(user));
-
-}
-
-{
-
-    function askPassword(ok, fail) {
-        let password = "rockstar";
-        if (password == "rocksftar") ok();
-        else fail();
-    }
-    let user = {
-        name: 'John',
-        login(result) {
-            console.log(this.name + (result ? ' logged in' : ' failed to log in'));
-
-        }
-    };
-    askPassword(user.login.bind(user, true), user.login.bind(user, false)); // ?
-}
-
-// В коде ниже класс Rabbit наследует Animal .
-// К сожалению, объект класса Rabbit не создаётся. Что не так? Исправьте ошибку.
-class Animal {
-    constructor(name) {
-        this.name = name;
-    }
-}
-class Rabbit extends Animal {
-    constructor(name) {
-        super(name);
-        this.name = name;
-        this.created = Date.now();
-    }
-}
-
-let rabbit = new Rabbit("Белый кролик"); // Error: this is not defined
-console.log(rabbit.name);
-
-
-
-// Создайте новый класс ExtendedClock , который будет наследоваться от Clock и
-// добавьте параметр precision – количество миллисекунд между «тиками». Установите
-// значение в 1000 (1 секунда) по умолчанию.
-// Сохраните ваш код в файл extended-clock.js
-// Не изменяйте класс clock.js . Расширьте его.
-class Clock {
-    constructor({ template }) {
-        this.template = template;
-    }
-    render() {
-        let date = new Date();
-        let hours = date.getHours();
-        if (hours < 10) hours = '0' + hours;
-        let mins = date.getMinutes();
-        if (mins < 10) mins = '0' + mins;
-        let secs = date.getSeconds();
-        if (secs < 10) secs = '0' + secs;
-        let output = this.template
-            .replace('h', hours)
-            .replace('m', mins)
-            .replace('s', secs);
-        console.log(output);
-    }
-    stop() {
-        clearInterval(this.timer);
-    }
-    start() {
-        this.render();
-        this.timer = setInterval(() => this.render(), 1000);
-    }
-}
-
-
-class ExtendedClock extends Clock {
-
-    constructor(options) {
-        super(options);
-        let { precision = 1000 } = options;
-        this.precision = precision;
+            start() {
+                this.render();
+                this.timer = setInterval(() => this.render(), this.precision);
+            }
         }
 
-    start() {
-        this.render();
-        this.timer = setInterval(() => this.render(), this.precision);
-    }
-}
+        let extclock = new ExtendedClock({ template: 'h:m:s' });
 
-let extclock = new ExtendedClock({template: 'h:m:s'});
+        extclock.start();
 
-extclock.start();
+        // Создайте класс FormatError , который наследует от встроенного класса SyntaxError .
+        // Класс должен поддерживать свойства message , name и stack .
 
-// Создайте класс FormatError , который наследует от встроенного класса SyntaxError .
-// Класс должен поддерживать свойства message , name и stack .
+        class FormatError extends SyntaxError {
+            constructor(message) {
+                super();
+                this.message = message;
+                this.name = 'FormatError';
+            }
+        }
 
-class FormatError extends SyntaxError {
-    constructor(message) {
-        super();
-        this.message = message;
-        this.name = 'FormatError';
-    }
-}
-
-let err = new FormatError("ошибка форматирования");
-console.log(err.message); // ошибка форматирования
-console.log(err.name); // FormatError
-console.log(err.stack); // stack
-console.log(err instanceof FormatError); // true
-console.log(err instanceof SyntaxError); // true (потому что наследует от SyntaxError)
+        let err = new FormatError("ошибка форматирования");
+        console.log(err.message); // ошибка форматирования
+        console.log(err.name); // FormatError
+        console.log(err.stack); // stack
+        console.log(err instanceof FormatError); // true
+        console.log(err instanceof SyntaxError); // true (потому что наследует от SyntaxError)
 
 
-// Задержка на промисах
-// Встроенная функция setTimeout использует колбэк-функции. Создайте альтернативу,
-// использующую промисы.
-// Функция delay(ms) должна возвращать промис, который перейдёт в состояние
-// «выполнен» через ms миллисекунд, так чтобы мы могли добавить к нему .then :
+        // Задержка на промисах
+        // Встроенная функция setTimeout использует колбэк-функции. Создайте альтернативу,
+        // использующую промисы.
+        // Функция delay(ms) должна возвращать промис, который перейдёт в состояние
+        // «выполнен» через ms миллисекунд, так чтобы мы могли добавить к нему .then :
 
-function delay(ms) {
-    return new Promise(function(resolve, reject){
-        setTimeout(() => resolve('dast is fantastish'), ms);
-    });
-}
-delay(3000).then(() => console.log('выполнилось через 3 секунды'));
+        function delay(ms) {
+            return new Promise(function (resolve, reject) {
+                setTimeout(() => resolve('dast is fantastish'), ms);
+            });
+        }
+        delay(3000).then(() => console.log('выполнилось через 3 секунды'));
 
 
 
-//Просто тестирую промисы
-new Promise(function (resolve, reject) {
-    let a = 1;
-    setTimeout(() => resolve(a), 1000);
-})
-    .then(function(a){
-        a=a*2;
-        console.log(a)
-
-        return new Promise(function (resolve, reject){
+        //Просто тестирую промисы
+        new Promise(function (resolve, reject) {
+            let a = 1;
             setTimeout(() => resolve(a), 1000);
         })
-    })    
-    .then(function(a){
-        a=a*2;
-        console.log(a)
+            .then(function (a) {
+                a = a * 2;
+                console.log(a)
 
-        let error = new Error('Whoops!');
-        throw error;
+                return new Promise(function (resolve, reject) {
+                    setTimeout(() => resolve(a), 1000);
+                })
+            })
+            .then(function (a) {
+                a = a * 2;
+                console.log(a)
 
-        return new Promise(function (resolve, reject){
-            setTimeout(() => resolve(a), 1000);
-        })
-    }).catch((error) => console.log(error));
+                let error = new Error('Whoops!');
+                throw error;
 
-    
-// Перепишите один из примеров раздела Цепочка промисов, используя async/await
-// вместо .then/catch :
-
-async function loadJson(url) {
-    let response = await fetch(url);
-    if (response.status == 200) {
-        return response.text();
-    } else {
-        throw new Error(response.status);
-    }
-}
-loadJson('https://api.github.com/users/iliakan') // (3)
-.then(alert)    
-.catch(alert); // Error: 404
+                return new Promise(function (resolve, reject) {
+                    setTimeout(() => resolve(a), 1000);
+                })
+            }).catch((error) => console.log(error));
 
 
-// Ниже пример из раздела Цепочка промисов, перепишите его, используя async/await
-// вместо .then/catch .
-// В функции demoGithubUser замените рекурсию на цикл: используя async/await ,
-// сделать это будет просто.
+        // Перепишите один из примеров раздела Цепочка промисов, используя async/await
+        // вместо .then/catch :
 
-class HttpError extends Error {
-    constructor(response) {
-        super(`${response.status} for ${response.url}`);
-        this.name = 'HttpError';
-        this.response = response;
-    }
-}
-
-async function loadJson(url) {
-
-    let response = await fetch(url);
-
-    if (response.status == 200) {
-        return response.json();
-    } else {
-        throw new HttpError(response);
-    }
-
-}
-// Запрашивать логин, пока github не вернёт существующего пользователя.
-async function demoGithubUser() {
-    
-    go: while (true) {
-        try {
-            let name = prompt("Введите логин?", "iliakan");
-            let user = await loadJson(`https://api.github.com/users/${name}`);
-            alert(`Полное имя: ${user.name}.`);
-            return user;
-
-        } catch (err) {
-            if (err instanceof HttpError && err.response.status == 404) {
-                alert("Такого пользователя не существует, пожалуйста, повторите ввод.");
-                continue go;
+        async function loadJson(url) {
+            let response = await fetch(url);
+            if (response.status == 200) {
+                return response.text();
             } else {
-                throw err;
+                throw new Error(response.status);
             }
         }
-    }
-}
-demoGithubUser();
+        loadJson('https://api.github.com/users/iliakan') // (3)
+            .then(alert)
+            .catch(alert); // Error: 404
+
+
+        // Ниже пример из раздела Цепочка промисов, перепишите его, используя async/await
+        // вместо .then/catch .
+        // В функции demoGithubUser замените рекурсию на цикл: используя async/await ,
+        // сделать это будет просто.
+
+        class HttpError extends Error {
+            constructor(response) {
+                super(`${response.status} for ${response.url}`);
+                this.name = 'HttpError';
+                this.response = response;
+            }
+        }
+
+        async function loadJson(url) {
+
+            let response = await fetch(url);
+
+            if (response.status == 200) {
+                return response.json();
+            } else {
+                throw new HttpError(response);
+            }
+
+        }
+        // Запрашивать логин, пока github не вернёт существующего пользователя.
+        async function demoGithubUser() {
+
+            go: while (true) {
+                try {
+                    let name = prompt("Введите логин?", "iliakan");
+                    let user = await loadJson(`https://api.github.com/users/${name}`);
+                    alert(`Полное имя: ${user.name}.`);
+                    return user;
+
+                } catch (err) {
+                    if (err instanceof HttpError && err.response.status == 404) {
+                        alert("Такого пользователя не существует, пожалуйста, повторите ввод.");
+                        continue go;
+                    } else {
+                        throw err;
+                    }
+                }
+            }
+        }
+        demoGithubUser();
+
+
+        // Совмещение асинхронной функции и промиса
+
+        async function wait() {
+            alert('promise nachal work')
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            return 'promise work vse';
+        }
+        function f() {
+            // покажет 10 через 1 секунду
+            wait()
+                .then(result => {
+                    alert(result);
+                    return new Promise(resolve => {
+                        setTimeout(() => resolve('promise nachal work'), 2000);
+                    });
+                })
+                .then(result => alert(result));
+        }
+        f();
