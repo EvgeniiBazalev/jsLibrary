@@ -1,0 +1,36 @@
+body {
+font-size: 5em;
+}
+
+button {
+    height: 130px;
+    width: 160px;
+    font-size: 0.5em;
+}
+
+.centrWindow {
+
+    width: 80%;
+    height: 300px;
+    background-color: lavender;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2em;
+
+    color: gray;
+    text-align: center;
+
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+td {
+    border: 1px solid black;
+    padding: 3px 5px;
+}
