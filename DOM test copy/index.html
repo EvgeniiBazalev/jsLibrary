@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+
+
+    <title>forTestAll</title>
+</head>
+
+<body>
+    <div class="centrWindow">
+        <p>Привет Мир!</p>
+    </div>
+
+    <div class="container" id="container">
+
+        <label for="year">Год:</label>
+        <input type="number" id="year" oninput="logDate()" value='2023'>
+        <label for="month">Месяц:</label>
+        <input type="number" id="month" oninput="logDate()" value='3' min = 1 max = 12>
+
+    </div>
+
+
+
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>
+<!-- 
+<table id="table">
+    <tr>
+        <td>один</td>
+        <td>два</td>
+    </tr>
+    <tr>
+        <td>три</td>
+        <td>четыре</td>
+    </tr>
+</table>
+<script>
+    // выводит содержимое первой строки, второй ячейки
+    alert(table.rows[0].cells[1].innerHTML) // "два"
+</script> -->
