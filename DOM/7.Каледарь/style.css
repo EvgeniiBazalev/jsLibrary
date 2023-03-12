@@ -37,7 +37,7 @@ button {
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     flex-direction: row;
 }
 
@@ -73,16 +73,4 @@ table {
   th {
     font-weight: bold;
     background-color: #E6E6E6;
-  }
-
-  .hours {
-    color: blue;
-  }
-
-  .minutes {
-    color: red;
-  }
-
-  .second {
-    color: rgb(18, 19, 18);
   }
